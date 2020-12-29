@@ -2,6 +2,8 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 
 exports.getProducts = (req, res, next) => {
+  const isLoggedin = req.session.isLoggedin;
+  console.log(isLoggedin);
   Product.find()
     .then(products => {
       console.log(products);
@@ -9,7 +11,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: 'All Products',
         path: '/products',
-        isAuthenticated: true
+        isAuthenticated: isLoggedin
       });
     })
     .catch(err => {
@@ -18,6 +20,7 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getProduct = (req, res, next) => {
+  const isLoggedin = req.session.isLoggedin
   const prodId = req.params.productId;
   Product.findById(prodId)
     .then(product => {
@@ -25,13 +28,14 @@ exports.getProduct = (req, res, next) => {
         product: product,
         pageTitle: product.title,
         path: '/products',
-        isAuthenticated: true
+        isAuthenticated: isLoggedin
       });
     })
     .catch(err => console.log(err));
 };
 
 exports.getIndex = (req, res, next) => {
+  const isLoggedin = req.session.isLoggedin
   Product.find()
     .then(products => {
       res.render('shop/index', {
@@ -39,7 +43,7 @@ exports.getIndex = (req, res, next) => {
         pageTitle: 'Shop',
         path: '/'
         ,
-        isAuthenticated: true
+        isAuthenticated: isLoggedin
       });
     })
     .catch(err => {
@@ -48,6 +52,8 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
+  const isLoggedin = req.session.isLoggedin
+  
   req.user
     .populate('cart.items.productId')
     .execPopulate()
@@ -56,9 +62,8 @@ exports.getCart = (req, res, next) => {
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
-        products: products
-        ,
-        isAuthenticated: true
+        products: products,
+        isAuthenticated: isLoggedin
       });
     })
     .catch(err => console.log(err));
@@ -113,6 +118,7 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
+  const isLoggedin = req.session.isLoggedin;
   Order.find({ 'user.userId': req.user._id })
     .then(orders => {
       res.render('shop/orders', {
@@ -120,7 +126,7 @@ exports.getOrders = (req, res, next) => {
         pageTitle: 'Your Orders',
         orders: orders
         ,
-        isAuthenticated: true
+        isAuthenticated: isLoggedin
       });
     })
     .catch(err => console.log(err));

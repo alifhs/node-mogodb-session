@@ -1,10 +1,12 @@
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
+   const isLoggedin = req.session.isLoggedin
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
-    editing: false
+    editing: false,
+    isAuthenticated: isLoggedin
   });
 };
 
@@ -13,6 +15,7 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
+  
   const product = new Product({
     title: title,
     price: price,
@@ -34,6 +37,7 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
+  const isLoggedin = req.session.isLoggedin
   if (!editMode) {
     return res.redirect('/');
   }
@@ -47,7 +51,8 @@ exports.getEditProduct = (req, res, next) => {
         pageTitle: 'Edit Product',
         path: '/admin/edit-product',
         editing: editMode,
-        product: product
+        product: product,
+        isAuthenticated: isLoggedin
       });
     })
     .catch(err => console.log(err));
@@ -76,6 +81,7 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
+  const isLoggedin = req.session.isLoggedin
   Product.find()
     // .select('title price -_id')
     // .populate('userId', 'name')
@@ -84,7 +90,8 @@ exports.getProducts = (req, res, next) => {
       res.render('admin/products', {
         prods: products,
         pageTitle: 'Admin Products',
-        path: '/admin/products'
+        path: '/admin/products',
+        isAuthenticated: isLoggedin
       });
     })
     .catch(err => console.log(err));

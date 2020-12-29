@@ -38,14 +38,14 @@ app.use(session({secret: 'our secret', resave: false, saveUninitialized: false, 
 //   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 // }))
 
-app.use((req, res, next) => {
-  User.findById('5fe8607d5933f0195c5c0b0e')  
-    .then(user => {
-      req.user = user;
-      next();
-    })
-    .catch(err => console.log(err));
-});
+// app.use((req, res, next) => {
+//   User.findById('5fe8607d5933f0195c5c0b0e')  
+//     .then(user => {
+//       req.user = user;
+//       next();
+//     })
+//     .catch(err => console.log(err));
+// });
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -62,8 +62,8 @@ mongoose.connect(MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true 
     User.findOne().then(user => {
       if (!user) {
         const user = new User({
-          name: 'Max',
-          email: 'max@test.com',
+          name: 'user',
+          email: 'user11@mail.com',
           cart: {
             items: []
           }
